@@ -46,10 +46,10 @@ function renderBoard(mat, selector) {
             const cell = mat[i][j]
             const className = `cell cell-${i}-${j}`
             var icon = ''
-            icon = (mat[i][j].isMine) ? MINE : COVERED
+            icon = COVERED
+            var tdId = `cell-${i}-${j}`
 
-
-            strHTML += `<td  onclick="getMineNegsCount(this)" class="${className}">${icon}</td>`
+            strHTML += `<td id="${tdId}"   onclick="revealCell(this)" class="${className}">${icon}</td>`
         }
         strHTML += '</tr>'
     }
@@ -59,18 +59,20 @@ function renderBoard(mat, selector) {
     elContainer.innerHTML = strHTML
 }
 function setMines() {
-    var locations = [{ row: 1, col: 0 }, { row: 2, col: 3 }]
+    var locations =[]
+    locations.push(getEmptyLocation(gBoard)) 
+    console.log(locations)
     for (var idx = 0; idx < locations.length; idx++) {
-        var i = locations[idx].row
-        var j = locations[idx].col
+        console.log('hey')
+        var i = locations[idx].i
+        var j = locations[idx].j
         gBoard[i][j].isMine = true
         console.log(gBoard)
     }
 }
 
 function getMineNegsCount(elCell) {
-    console.log(elCell.class)
-   var gGamerPos=getCellCoord(elCell.id)
+    var gGamerPos = getCellCoord(elCell.id)
     console.log(gGamerPos)
     var negsCount = 0;
     for (var i = gGamerPos.i - 1; i <= gGamerPos.i + 1; i++) {
@@ -81,20 +83,58 @@ function getMineNegsCount(elCell) {
             var currCell = gBoard[i][j]
             if (currCell.isMine === true) negsCount++;
         }
+
     }
-    var elNgsCount = document.querySelector('div .mine-fild')
-    elNgsCount.innerText = negsCount
+    console.log(gBoard[gGamerPos.i][gGamerPos.j].negMines)
+    gBoard[gGamerPos.i][gGamerPos.j].negMines = negsCount
+    console.log(gBoard[gGamerPos.i][gGamerPos.j].negMines)
+    // var elNgsCount = document.querySelector('div .mine-fild')
+    // elNgsCount.innerText = negsCount
 
 }
 function getCellCoord(strCellId) {
-    console.log(strCellId)
     var coord = {}
+console.log(strCellId)
     var parts = strCellId.split('-') // ['cell','2','3']
     coord.i = +parts[1]
     coord.j = +parts[2]
     return coord // {i:2,j:3}
 }
+function revealCell(elCell) {
+    getMineNegsCount(elCell)
+     var location
+    location = getCellCoord(elCell.id)
+    console.log(gBoard[location.i][location.j].negMines)
+    var value = (gBoard[location.i][location.j].isMine) ? MINE : gBoard[location.i][location.j].negMines
+    renderCell(location, value)
+   
+}
+
+function renderCell(location, value) {
+    console.log('hey')
+    const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
+    
+    elCell.innerText = value
+}
+function getEmptyLocation(board) {
+    var emptyLocations = []
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[0].length; j++) {
+            if (!board[i][j].isMine) {
+                emptyLocations.push({ i, j })
+
+            }
+        }
+    }
+    if (!emptyLocations.length) return null
+    var randIdx = getRandomIntInclusive(0, emptyLocations.length - 1)
+    return emptyLocations[randIdx]
+}
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
 //script
 gBoard = createBoard()
 setMines()
 renderBoard(gBoard)
+

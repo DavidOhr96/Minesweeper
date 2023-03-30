@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title> Minesweeper by D.Ohr</title>
-<rel link="stylesheet" href="css/style.css"></rel>
+    <title> Minesweeper by D.Ohr</title>
+    <link rel="stylesheet" href="css/style.css">
+    </rel>
 </head>
 
-<body onload="createBoard()" >
-
-    <div class="mine-fild" oncontextmenu="return false;"></div>
+<body onload="onInit(0)">
 
 
+    <div class="main-icon" onclick="onInit(0)">😊 </div>
+    <div class="modal"> testing </div>
+    <div class="mine-fild"></div>
+    <div class="buttons"></div>
+    <button onclick="onInit(0)">easy</button>
+    <button onclick="onInit(1)">medium</button>
+    <button onclick="onInit(2)">HARD</button>
+
+    </div>
 
 
 
-
-<footer>
-    <p></p> another app by D.ohr 🐱‍💻</p>
-</footer>
-<script src="js/main.js" ></script>
+    <hr>
+    <footer>
+        <p></p> another app by D.Ohr 🐱‍💻</p>
+    </footer>
+    <script src="js/main.js"></script>
 </body>
+
 </html>

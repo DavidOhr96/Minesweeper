@@ -1,0 +1,39 @@
+
+table{
+  margin:auto ;
+  border:2px solid black;
+  margin-bottom: 5%;
+  position: relative;
+  
+}
+td{
+    width:25px;
+    height: 26px;
+    text-align: center;
+    padding: 2px;
+    border: 2px gray solid;
+    position: relative;
+    
+}
+footer{
+    color: rgb(40, 2, 97);
+    text-align: center;
+}
+
+.main-icon{
+    margin-top: 10%;
+    text-align: center;
+}
+.modal{
+    background-color: aqua;
+    z-index: 10;
+    border:10px black solid;
+ width:300px;
+ height:200px;
+ left: calc(50% - 150px);
+    position: absolute;
+    margin: auto;
+    text-align: center;
+    display: none;
+
+}

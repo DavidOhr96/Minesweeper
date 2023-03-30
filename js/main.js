@@ -8,36 +8,96 @@ var cell = {
     isrevealed: false,
     isMarked: false,
 }
-var gLevel = {
+var gLevel = [{
+    difficulty: 'easy',
     SIZE: 4,
     MINES: 2,
-}
+},
+{
+    difficulty: 'medium',
+    SIZE: 8,
+    MINES: 14,
+},
+{
+    difficulty: 'hard',
+    SIZE: 12,
+    MINES: 32,
+},
+]
 var gGame = {
-    isOn: false,
+    isOn: true,
+    isWin: true,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
+
 }
+var gFreeCellCounter = 0
 var mines = []
 const MINE = '💩'
-const COVERED = '❓'
-const CLEAR = ' '
+const COVERED = ''
+const CLEAR = ' ✔'
+const FLAG = '🌹'
 //Functions
-function createBoard() {
-    var rowCount = 4
-    var colCount = 4
+function onInit(level) {
+    gLevel = [{
+        difficulty: 'easy',
+        SIZE: 4,
+        MINES: 2,
+    },
+    {
+        difficulty: 'medium',
+        SIZE: 8,
+        MINES: 14,
+    },
+    {
+        difficulty: 'hard',
+        SIZE: 12,
+        MINES: 32,
+    },
+    ]
+    cell = {
+        isMine: false,
+        negMines: 0,
+        isrevealed: false,
+        isMarked: false,
+    }
+    gGame = {
+        isOn: true,
+        isWin: true,
+        shownCount: 0,
+        markedCount: 0,
+        secsPassed: 0,
+
+    }
+    gLevel = gLevel[level]
+    gFreeCellCounter = 0
+    gBoard = createBoard(gLevel)
+    renderBoard(gBoard)
+    setMines()
+    document.querySelector('.modal').style.display = 'none'
+    document.querySelector('.main-icon').innerText = '😊'
+
+
+
+
+}
+function createBoard(gLevel) {
+    var rowCount = gLevel.SIZE
+    var colCount = gLevel.SIZE
     var board = []
     for (var i = 0; i < rowCount; i++) {
         board[i] = []
         for (var j = 0; j < colCount; j++) {
             board[i][j] = { ...cell }
+            gFreeCellCounter++
         }
     }
     return board
 }
 function renderBoard(mat, selector) {
 
-    var strHTML = '<table border="0"><tbody>'
+    var strHTML = '<table ><tbody>'
     for (var i = 0; i < mat.length; i++) {
 
         strHTML += '<tr>'
@@ -49,7 +109,8 @@ function renderBoard(mat, selector) {
             icon = COVERED
             var tdId = `cell-${i}-${j}`
 
-            strHTML += `<td id="${tdId}"   onclick="revealCell(this)" class="${className}">${icon}</td>`
+            strHTML += `<td id="${tdId}"   onclick="revealCell(this)" oncontextmenu="setFlag(this)" 
+             class="${className}">${icon}</td>`
         }
         strHTML += '</tr>'
     }
@@ -59,15 +120,16 @@ function renderBoard(mat, selector) {
     elContainer.innerHTML = strHTML
 }
 function setMines() {
-    var locations =[]
-    locations.push(getEmptyLocation(gBoard)) 
-    console.log(locations)
+    var locations = []
+    for (var i = 0; i < gLevel.MINES; i++)
+        locations.push(getEmptyLocation(gBoard))
+
     for (var idx = 0; idx < locations.length; idx++) {
         console.log('hey')
-        var i = locations[idx].i
-        var j = locations[idx].j
-        gBoard[i][j].isMine = true
-        console.log(gBoard)
+        var rowIdx = locations[idx].i
+        var colIdx = locations[idx].j
+        gBoard[rowIdx][colIdx].isMine = true
+        gFreeCellCounter--
     }
 }
 
@@ -94,26 +156,36 @@ function getMineNegsCount(elCell) {
 }
 function getCellCoord(strCellId) {
     var coord = {}
-console.log(strCellId)
+    console.log(strCellId)
     var parts = strCellId.split('-') // ['cell','2','3']
     coord.i = +parts[1]
     coord.j = +parts[2]
     return coord // {i:2,j:3}
 }
 function revealCell(elCell) {
-    getMineNegsCount(elCell)
-     var location
-    location = getCellCoord(elCell.id)
-    console.log(gBoard[location.i][location.j].negMines)
-    var value = (gBoard[location.i][location.j].isMine) ? MINE : gBoard[location.i][location.j].negMines
-    renderCell(location, value)
-   
-}
+    if (!gGame.isOn) return
+    var location = getCellCoord(elCell.id)
+    var cell = gBoard[location.i][location.j]
+    if (cell.isMarked) return
 
+    if (cell.isMine) {
+        gGame.isWin = false
+        gameOver()
+    }
+    else {
+        getMineNegsCount(elCell)
+        gGame.shownCount++
+        if (gGame.shownCount === gFreeCellCounter) gameOver()
+    }
+    var value = (cell.isMine) ? MINE : gBoard[location.i][location.j].negMines
+    renderCell(location, value)
+
+
+}
 function renderCell(location, value) {
     console.log('hey')
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-    
+
     elCell.innerText = value
 }
 function getEmptyLocation(board) {
@@ -133,8 +205,40 @@ function getEmptyLocation(board) {
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
+function setFlag(elCell) {
+
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    if (!gGame.isOn) return
+    var location = getCellCoord(elCell.id)
+    var isMarked = gBoard[location.i][location.j].isMarked
+
+    var value = (isMarked) ? COVERED : FLAG
+    gBoard[location.i][location.j].isMarked = (isMarked) ? false : true
+
+    renderCell(location, value)
+    console.log(elCell)
+}
+function gameOver() {
+    gGame.isOn = false
+    var modal = document.querySelector('.modal')
+    modal.style.display = 'block'
+    var elIcon = document.querySelector('.main-icon')
+    if (gGame.isWin) {
+        modal.innerText = 'congratulations! you win! paly again on the smily face'
+        elIcon.innerText = '😎'
+    }
+    else {
+        modal.innerText = 'You lose restart on smily face'
+        elIcon.innerText = '🤯'
+    }
+
+    // elIcon.innerText = (gGame.isWin) ? '😎' : '🤯'
+
+
+}
+console.log(gLevel)
 //script
-gBoard = createBoard()
-setMines()
-renderBoard(gBoard)
+// gBoard = createBoard()
+// setMines()
+// renderBoard(gBoard)
 

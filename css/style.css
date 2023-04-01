@@ -13,6 +13,7 @@ td{
     padding: 2px;
     border: 2px gray solid;
     position: relative;
+    background-color: #E1EEDD;
     
 }
 footer{
@@ -25,9 +26,10 @@ footer{
     text-align: center;
 }
 .modal{
-    background-color: aqua;
+    color:#F0A04B;
+    background-color: #183A1D;
     z-index: 10;
-    border:10px black solid;
+    border:10px #183A1D solid;
  width:300px;
  height:200px;
  left: calc(50% - 150px);
@@ -35,5 +37,12 @@ footer{
     margin: auto;
     text-align: center;
     display: none;
-
+}
+button{
+    position:relative;
+    left: calc(50% - 85px);
+    background-color: #F0A04B;
+}
+body{
+    background-color: #FEFBE9;
 }

@@ -1,48 +1,50 @@
-
-table{
-  margin:auto ;
-  border:2px solid black;
-  margin-bottom: 5%;
-  position: relative;
-  
+table {
+    margin: auto;
+    border: 2px solid black;
+    margin-bottom: 5%;
+    position: relative;
 }
-td{
-    width:25px;
+
+td {
+    width: 25px;
     height: 26px;
     text-align: center;
     padding: 2px;
     border: 2px gray solid;
     position: relative;
     background-color: #E1EEDD;
-    
 }
-footer{
+
+footer {
     color: rgb(40, 2, 97);
     text-align: center;
 }
 
-.main-icon{
+.main-icon {
     margin-top: 10%;
     text-align: center;
 }
-.modal{
-    color:#F0A04B;
+
+.modal {
+    color: #F0A04B;
     background-color: #183A1D;
     z-index: 10;
-    border:10px #183A1D solid;
- width:300px;
- height:200px;
- left: calc(50% - 150px);
+    border: 10px #183A1D solid;
+    width: 300px;
+    height: 200px;
+    left: calc(50% - 150px);
     position: absolute;
     margin: auto;
     text-align: center;
     display: none;
 }
-button{
-    position:relative;
+
+button {
+    position: relative;
     left: calc(50% - 85px);
     background-color: #F0A04B;
 }
-body{
+
+body {
     background-color: #FEFBE9;
 }

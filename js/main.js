@@ -1,4 +1,5 @@
 'use strict'
+
 //Variables
 var gBoard = []
 var gcounter = 0
@@ -8,7 +9,6 @@ var cell = {
     isrevealed: false,
     isMarked: false,
 }
-
 var gLevel = []
 var gGame = {
     isOn: true,
@@ -16,7 +16,6 @@ var gGame = {
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
-
 }
 var gFreeCellCounter = 0
 var mines = []
@@ -70,7 +69,6 @@ function onInit(level) {
     document.querySelector('.main-icon').innerText = '😊'
     setMines()
     defineNegMines()
-
 }
 function createBoard(gLevel) {
     var rowCount = gLevel.SIZE
@@ -86,26 +84,21 @@ function createBoard(gLevel) {
     return board
 }
 function renderBoard(mat, selector) {
-
     var strHTML = '<table ><tbody>'
     for (var i = 0; i < mat.length; i++) {
-
         strHTML += '<tr>'
         for (var j = 0; j < mat[0].length; j++) {
-
             const cell = mat[i][j]
             const className = `cell cell-${i}-${j}`
             var icon = ''
             icon = COVERED
             var tdId = `cell-${i}-${j}`
-
             strHTML += `<td id="${tdId}"   onclick="revealCell(this)" oncontextmenu="setFlag(this)" 
                  class="${className}">${icon}</td>`
         }
         strHTML += '</tr>'
     }
     strHTML += '</tbody></table>'
-
     const elContainer = document.querySelector(".mine-fild")
     elContainer.innerHTML = strHTML
 }
@@ -114,33 +107,27 @@ function revealCell(elCell) {
     var location = getCellCoord(elCell.id)
     var cell = gBoard[location.i][location.j]
     if (cell.isMarked) return
-
     if (cell.isMine) {
         loseLife()
-
     }
     else {
         gGame.shownCount++
         getMineNegsCount(elCell)
-        
         if (gGame.shownCount === gFreeCellCounter) gameOver()
     }
     var value = (cell.isMine) ? MINE : gBoard[location.i][location.j].negMines
     renderCell(location, value)
-
-
 }
 function getCellCoord(strCellId) {
     var coord = {}
     console.log(strCellId)
-    var parts = strCellId.split('-') // ['cell','2','3']
+    var parts = strCellId.split('-')
     coord.i = +parts[1]
     coord.j = +parts[2]
-    return coord // {i:2,j:3}
+    return coord
 }
 function renderCell(location, value) {
     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-
     elCell.innerText = value
 }
 function getEmptyLocation(board) {
@@ -173,24 +160,18 @@ function gameOver() {
         modal.innerText = 'You lose restart on smily face'
         elIcon.innerText = '🤯'
     }
-
-    // elIcon.innerText = (gGame.isWin) ? '😎' : '🤯'
-
-
 }
 function setFlag(elCell) {
-
     document.addEventListener('contextmenu', event => event.preventDefault());
     if (!gGame.isOn) return
     var location = getCellCoord(elCell.id)
     var isMarked = gBoard[location.i][location.j].isMarked
-
     var value = (isMarked) ? COVERED : FLAG
     gBoard[location.i][location.j].isMarked = (isMarked) ? false : true
-
     renderCell(location, value)
     console.log(elCell)
 }
+
 //lives
 function getLives() {
     for (var i = 0; i < 3; i++) {
@@ -211,9 +192,7 @@ function loseLife() {
     }
 }
 
-
 //Mines
-
 function revealNegs(cellCoord) {
     var negsCount = 0;
     for (var i = cellCoord.i - 1; i <= cellCoord.i + 1; i++) {
@@ -234,20 +213,13 @@ function revealNegs(cellCoord) {
 
 
         }
-
     }
-
-    // if (!negsCount)revealNegs(cellCoord)
-    // gBoard[cellCoord.i][cellCoord.j].negMines = negsCount
-    // renderCell(cellCoord, gBoard[cellCoord.i][cellCoord.j].negMines)
 }
 function setMines() {
     var locations = []
-    // var locations = [{'i':1,j:1},{'i':3,j:1}]
     for (var i = 0; i < gLevel.MINES; i++)
         locations.push(getEmptyLocation(gBoard))
     console.log(locations)
-
     for (var idx = 0; idx < locations.length; idx++) {
         var rowIdx = locations[idx].i
         var colIdx = locations[idx].j
@@ -282,15 +254,12 @@ function countNegMines(rowIdx, colIdx) {
             if (currCell.isMine === true) negsCount++;
         }
     }
-    // console.log(negsCount, 'negscount for', rowIdx, colIdx)
     gBoard[rowIdx][colIdx].negMines = negsCount
-
 }
 function defineNegMines() {
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[i].length; j++) {
             countNegMines(i, j)
-
         }
     }
 }
